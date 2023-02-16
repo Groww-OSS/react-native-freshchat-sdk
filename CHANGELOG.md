@@ -1,5 +1,222 @@
 # Freshchat React Native SDK
 
+## 4.1.1 (2022-10-26)
+
+### Feature Enhancement
+* Added ability to control file attachment using `fileSelectionEnabled` config.
+* This version lets you receive feedback (opinion polls & comments) from users during bot interactions in iOS
+
+## 4.1.0 (2022-10-18)
+
+### Bug Fix:
+* Fix for keyboard hiding last few messages for Android.
+
+## 4.0.9 (2022-10-15)
+
+### Bug Fix:
+* Better handling of HTML content in messages.
+* Allow encoded strings with quick actions and replies in messages.
+
+## 4.0.8 (2022-09-30)
+
+### Feature Enhancement
+* Bot will now be able to validate text in Mobile number, Email-ID and Number input types from customer in the conversation.
+* Customer can upload file for bot flows and attachment option.
+
+## 4.0.7 (2022-08-24)
+
+### Feature Enhancement
+* Redesign of "Powered by Freshworks" banner for both iOS and Android.
+
+### Bug Fix:
+* Fix for orientation change crash in Android Quick Actions.
+* Add TOKEN_NOT_PROCESSED state for JWT auth users in iOS.
+
+## 4.0.6 (2022-08-11)
+
+### Bug Fix:
+* Fix for orientation change crash which was introduced in version 5.1.0 in Android.
+
+## 4.0.5 (2022-08-09)
+
+### Feature Enhancement
+* Support for quick options in bot flow.
+* Support for read-only and single select carousel in bots flow in iOS.
+* Display missing suggested articles in initial bot flow in iOS.
+* New device models added to track user devices in iOS.
+
+### Bug Fix:
+* Fix for ConnectivityManager leak in Android.
+* Fixed notification not being shown in the notification tray, when the app is in the background for Android.
+* Fixed an issue with restoring a user using JWT in Android.
+* Fix for dismissing keyboard when moving from Chat screen to App screen in Android.
+* Fix for handing empty CSAT in Android.
+* Display timestamp value for bot messages in iOS.
+* Theme fix for CSAT prompt in iOS.
+* Support for <li>,<ol> and <ul> html tags in messages in iOS.
+* Update custom response expectation message with locale change in iOS.
+* Other minor bug fixes.
+
+## 4.0.4 (2022-04-06)
+
+### Bug Fix:
+* Stop bot from triggering messages in wrong scenarios.
+
+## 4.0.3 (2022-01-28)
+
+### Bug Fix:
+* Unread count overlap for topic list.
+* Black navigation bar appearance on navigating via push notification.
+* Rare invalid domain prompt during sdk initialization.
+* Fix for displaying notifications in Android 12.
+
+## 4.0.2 (2021-12-06)
+
+### Enhancement
+* Display complete name for messages created using API
+* Resouces path update and minor changes for other framework bundle
+
+### Bug Fix:
+* Fix for Topic name and image being empty
+* FAQ contactUs tags filter
+
+## 4.0.1 (2021-11-08)
+
+### Bug Fix:
+* Fix CFBundleSupportedPlatforms issue while submitting app to store.
+
+## 4.0.0 (2021-10-28)
+
+### Enhancement:
+* Introducing self-service via bots on the SDK. Bots built using the Unified Bot Builder will now be accessible on the SDK too. Learn more about the capability [here](https://support.freshchat.com/en/support/solutions/articles/50000003778-bots-on-freshdesk-messaging-mobile-sdk).
+
+## 3.3.5 (2021-08-31)
+
+### Bug Fix:
+* A fix to honour FAQ category icons in all accounts.
+
+## 3.3.4 (2021-07-07)
+
+### Enhancement:
+* iOS performance improvements in rendering messages.
+
+### Bug Fix:
+* Fix for CSAT UI bug in iOS.
+
+## 3.3.3 (2021-06-21)
+
+### Bug Fix:
+* Fix for data encryption issue due to changes made in v4.3.2.
+
+## 3.3.2 (2021-04-09)
+
+### Enhancement:
+* Exposed NotificationImportanceConfig for Android.
+* Updated cryptographic encryption pattern used for encrypting shared preferences in Android.
+* Upgraded picasso library version to 2.8.
+
+## 3.3.1 (2021-02-24)
+
+### Bug Fix:
+* Support for custom reply text in quick reply options.
+
+## 3.3.0 (2021-02-03)
+
+### Enhancement:
+* Omni Kbase support for bundled accounts.
+
+## 3.2.0 (2021-01-19)
+
+### Enhancements:
+* Upgraded Android targetSDKVersion to 29.
+* Updated the algorithm used for encrypting Shared Preferences in Android.
+
+### Bug Fix:
+* Fix for CSAT UI bug in iOS.
+
+## 3.1.1 (2021-01-04)
+
+### Bug Fix:
+* Fix for FAQs content visibility in iOS.
+
+## 3.1.0 (2020-12-16)
+
+### Feature
+* Omni Kbase support for bundled accounts in iOS.
+
+### Enhancements
+* Improved polling mechanism in iOS.
+
+### Bug Fix
+* Bug fixes in iOS JWT accounts.
+
+## 3.0.0 (2020-11-23)
+
+### Enhancements
+* Support for live translation of messages.
+* Pre-populate caption text while attaching images.
+* Proactive warning for incorrect app domain.
+* Added extra space around send button in iOS chat screen.
+* Support sub locale of languages in iOS.
+* Removed extra padding for images in iOS.
+* Support for custom line spacing of messages in chat screen in Android.
+
+### Bug Fix
+* iOS Thread related crashes.
+* Better handling of system font for HTML messages in iOS.
+
+## 2.6.4 (2020-09-07)
+
+### Bug Fixes
+* Better handling of "&" in iOS messages.
+* Removed search icon when FAQ search is open in Android.
+* Added “Still looking for help? Talk to us” string for FAQ downvote in Android. 
+
+## 2.6.3 (2020-08-07)
+
+### Enhancement
+* Android and iOS performance improvements in rendering messages.
+
+### Bug Fix
+* Android and iOS Fix to honor showContactUsOnFaqNotHelpful config
+
+## 2.6.2 (2020-07-07)
+
+### Enhancement
+* Android performance improvements in rendering messages.
+
+### Bug Fix
+* iOS UI Bug fixes.
+
+
+## 2.6.1 (2020-06-18)
+
+### Enhancement
+* Support for multiline placeholder text in feedback view.
+
+## 2.6.0 (2020-06-15)
+
+### Feature
+* Support to book meetings.
+
+### Enhancement
+* Optimisation for iOS 13.
+
+### Bug Fixes
+* Show agent first name alone instead of full name.
+* Fixed image resize issue in Android.
+* Minor bug fixes in iOS.
+
+## 2.5.0 (2020-05-13)
+
+### Feature
+* Support for messages with Carousel options.
+
+## 2.4.0 (2020-05-04)
+
+### Feature
+* Support for multi choice question with dropdown.
+
 ## 2.3.1 (2020-03-17)
 
 ### Bug Fix

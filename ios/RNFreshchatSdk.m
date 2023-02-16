@@ -47,7 +47,8 @@ RCT_EXPORT_MODULE();
              FRESHCHAT_USER_INTERACTED,
              FRESHCHAT_EVENTS,
              FRESHCHAT_OPEN_LINKS,
-             FRESHCHAT_ACTION_NOTIFICATION_CLICK_LISTENER];
+             FRESHCHAT_ACTION_NOTIFICATION_CLICK_LISTENER,
+             FRESHCHAT_SET_TOKEN_TO_REFRESH_DEVICE_PROPERTIES];
 }
 
 - (NSDictionary *)constantsToExport
@@ -57,13 +58,21 @@ RCT_EXPORT_MODULE();
                                         @"PRIORITY_LOW": [NSNumber numberWithInt:-1],
                                         @"PRIORITY_MAX": [NSNumber numberWithInt:2],
                                         @"PRIORITY_MIN": [NSNumber numberWithInt:-2]},
+             @"NotificationImportance":@{ @"NONE":[NSNumber numberWithInt:0],
+                                        @"MIN": [NSNumber numberWithInt:1],
+                                        @"LOW": [NSNumber numberWithInt:2],
+                                        @"DEFAULT": [NSNumber numberWithInt:3],
+                                        @"HIGH": [NSNumber numberWithInt:4],
+                                        @"MAX": [NSNumber numberWithInt:5]},
              @"FilterType":@{@"ARTICLE": @"article",@"CATEGORY": @"category"},
              @"ACTION_USER_RESTORE_ID_GENERATED":FRESHCHAT_USER_RESTORE_ID_GENERATED,
              @"ACTION_UNREAD_MESSAGE_COUNT_CHANGED":FRESHCHAT_UNREAD_MESSAGE_COUNT_CHANGED,
              @"ACTION_USER_INTERACTION": FRESHCHAT_USER_INTERACTED,
              @"ACTION_FRESHCHAT_EVENTS": FRESHCHAT_EVENTS,
              @"ACTION_OPEN_LINKS": FRESHCHAT_OPEN_LINKS,
-             @"FRESHCHAT_ACTION_NOTIFICATION_CLICK_LISTENER": FRESHCHAT_ACTION_NOTIFICATION_CLICK_LISTENER};
+             @"FRESHCHAT_ACTION_NOTIFICATION_CLICK_LISTENER": FRESHCHAT_ACTION_NOTIFICATION_CLICK_LISTENER,
+             @"ACTION_SET_TOKEN_TO_REFRESH_DEVICE_PROPERTIES":FRESHCHAT_SET_TOKEN_TO_REFRESH_DEVICE_PROPERTIES
+    };
 }
 
 RCT_EXPORT_METHOD(init:(NSDictionary *)options)
@@ -95,9 +104,16 @@ RCT_EXPORT_METHOD(init:(NSDictionary *)options)
     if(options [@"gallerySelectionEnabled"]) {
         config.gallerySelectionEnabled = [[options objectForKey:@"gallerySelectionEnabled"] boolValue];
     }
+    if(options [@"fileSelectionEnabled"]) {
+        config.fileAttachmentEnabled = [[options objectForKey:@"fileSelectionEnabled"] boolValue];
+    }
 
     if(options [@"notificationSoundEnabled"]) {
         config.notificationSoundEnabled = [[options objectForKey:@"notificationSoundEnabled"] boolValue];
+    }
+    
+    if(options [@"errorLogsEnabled"]) {
+        config.errorLogsEnabled = [[options objectForKey:@"errorLogsEnabled"] boolValue];
     }
 
     if(options [@"teamMemberInfoVisible"]) {
@@ -156,6 +172,9 @@ RCT_EXPORT_METHOD(showFAQsWithOptions:(NSDictionary *)args)
     }
     if(args [@"showContactUsOnAppBar"]) {
         options.showContactUsOnAppBar = [[args objectForKey:@"showContactUsOnAppBar"] boolValue];
+    }
+    if(args [@"showContactUsOnFaqNotHelpful"]) {
+        options.showContactUsOnFaqNotHelpful = [[args objectForKey:@"showContactUsOnFaqNotHelpful"] boolValue];
     }
 
     NSMutableArray *tagsList = [NSMutableArray array];
@@ -506,6 +525,20 @@ RCT_EXPORT_METHOD(registerNotificationClickListener:(BOOL)shouldRegister)
     }
 }
 
+RCT_EXPORT_METHOD(registerForJWTRefresh:(BOOL)shouldRegister)
+{
+    if (shouldRegister == YES) {
+        NSLog(@"registerForJWTRefresh YES");
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(jwtTokenRefreshEventTriggered:)
+                                                     name:FRESHCHAT_SET_TOKEN_TO_REFRESH_DEVICE_PROPERTIES
+                                                   object:nil];
+    } else {
+        NSLog(@"registerForJWTRefresh NO");
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:FRESHCHAT_SET_TOKEN_TO_REFRESH_DEVICE_PROPERTIES object:nil];
+    }
+}
+
 RCT_EXPORT_METHOD(openFreshchatDeeplink:(NSString *)link)
 {
     UIViewController *visibleVC = [self topMostController];
@@ -515,6 +548,11 @@ RCT_EXPORT_METHOD(openFreshchatDeeplink:(NSString *)link)
 RCT_EXPORT_METHOD(trackEvent:(NSString *)name :(NSDictionary *)properties)
 {
     [[Freshchat sharedInstance] trackEvent:name withProperties:properties];
+}
+
+RCT_EXPORT_METHOD(notifyAppLocaleChange)
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:FRESHCHAT_USER_LOCALE_CHANGED object:self];
 }
 
 - (void) userRestoreIdGenerated:(NSNotification *) notification{
@@ -572,6 +610,11 @@ RCT_EXPORT_METHOD(trackEvent:(NSString *)name :(NSDictionary *)properties)
     }
     
     return topController;
+}
+
+- (void) jwtTokenRefreshEventTriggered:(NSNotification *) notification {
+    NSLog(@"jwtTokenRefreshEventTriggered triggered");
+    [self sendEventWithName:FRESHCHAT_SET_TOKEN_TO_REFRESH_DEVICE_PROPERTIES body:nil];
 }
 
 @end

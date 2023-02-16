@@ -13,7 +13,9 @@ class FreshchatConfig {
         this.teamMemberInfoVisible = true;
         this.cameraCaptureEnabled = true;
         this.gallerySelectionEnabled = true;
+        this.fileSelectionEnabled = true;
         this.responseExpectationEnabled = true;
+        this.errorLogsEnabled = true; //iOS only
         this.showNotificationBanner = true; //iOS only
         this.notificationSoundEnabled = true; //iOS only
 

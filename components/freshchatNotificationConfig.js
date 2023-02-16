@@ -9,6 +9,15 @@ const NotificationPriority = {
     "PRIORITY_MIN": RNFreshchatSdk.NotificationPriority.PRIORITY_MIN
 };
 
+const NotificationImportance = {
+    "NONE": RNFreshchatSdk.NotificationImportance.NONE,
+    "MIN": RNFreshchatSdk.NotificationImportance.MIN,
+    "LOW": RNFreshchatSdk.NotificationImportance.LOW,
+    "DEFAULT": RNFreshchatSdk.NotificationImportance.DEFAULT,
+    "HIGH": RNFreshchatSdk.NotificationImportance.HIGH,
+    "MAX": RNFreshchatSdk.NotificationImportance.MAX
+};
+
 
 class FreshchatNotificationConfig {
 
@@ -20,7 +29,8 @@ class FreshchatNotificationConfig {
         this.activityToLaunchOnFinish = null;
         this.largeIcon = null;
         this.smallIcon = null;
-        this.priority = 0;
+        this.priority = NotificationPriority.PRIORITY_DEFAULT;
+        this.importance = NotificationImportance.DEFAULT;
         this.overrideNotificationClickListener = false;
 
         Object.preventExtensions(this);
@@ -28,6 +38,10 @@ class FreshchatNotificationConfig {
 
     static get NotificationPriority() {
         return NotificationPriority;
+    }
+
+    static get NotificationImportance() {
+        return NotificationImportance;
     }
 }
 

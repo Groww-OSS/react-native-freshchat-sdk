@@ -1,5 +1,6 @@
 package com.freshchat.consumer.sdk.react;
 
+import androidx.annotation.NonNull;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
@@ -10,8 +11,6 @@ import com.facebook.react.uimanager.ViewManager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import androidx.annotation.NonNull;
 
 public class RNFreshchatSdkPackage implements ReactPackage {
 
