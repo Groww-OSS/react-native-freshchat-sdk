@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.facebook.react.bridge.Callback;
@@ -34,15 +37,13 @@ import com.freshchat.consumer.sdk.exception.JwtException;
 import com.freshchat.consumer.sdk.exception.MethodNotAllowedException;
 import com.freshchat.consumer.sdk.LinkHandler;
 import com.freshchat.consumer.sdk.Event;
+import com.freshchat.consumer.sdk.FreshchatWebViewListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import java.lang.ref.WeakReference;
 
 
 public class RNFreshchatSdk extends ReactContextBaseJavaModule {
@@ -50,11 +51,13 @@ public class RNFreshchatSdk extends ReactContextBaseJavaModule {
     private static final String LOG_TAG = "RNFreshchatSdk";
     private static final String FRESHCHAT_ACTION_USER_INTERACTION = "com.freshchat.consumer.sdk.reactnative.actions.UserInteraction";
     private static final String ACTION_OPEN_LINKS = "ACTION_OPEN_LINKS";
+    private static final String ACTION_LOCALE_CHANGED_BY_WEBVIEW = "ACTION_LOCALE_CHANGED_BY_WEBVIEW";
 
     private final FreshchatSDKBroadcastReceiver restoreIdUpdatesReceiver;
     private final FreshchatSDKBroadcastReceiver messageCountUpdatesReceiver;
     private final FreshchatSDKBroadcastReceiver userActionsReceiver;
     private final FreshchatSDKBroadcastReceiver notificationClickReceiver;
+    private final FreshchatSDKBroadcastReceiver jwtRefreshEventReceiver;
 
     public RNFreshchatSdk(@NonNull ReactApplicationContext reactcontext) {
         super(reactcontext);
@@ -63,6 +66,7 @@ public class RNFreshchatSdk extends ReactContextBaseJavaModule {
         messageCountUpdatesReceiver = new FreshchatSDKBroadcastReceiver(reactcontext, Freshchat.FRESHCHAT_ACTION_MESSAGE_COUNT_CHANGED);
         userActionsReceiver = new FreshchatSDKBroadcastReceiver(reactcontext, Freshchat.FRESHCHAT_EVENTS);
         notificationClickReceiver = new FreshchatSDKBroadcastReceiver(reactcontext, Freshchat.FRESHCHAT_ACTION_NOTIFICATION_INTERCEPTED);
+        jwtRefreshEventReceiver = new FreshchatSDKBroadcastReceiver(reactcontext, Freshchat.FRESHCHAT_SET_TOKEN_TO_REFRESH_DEVICE_PROPERTIES);
     }
 
     @Override
@@ -74,17 +78,27 @@ public class RNFreshchatSdk extends ReactContextBaseJavaModule {
         notificationPriorityMap.put("PRIORITY_LOW", -1);
         notificationPriorityMap.put("PRIORITY_MAX", 2);
         notificationPriorityMap.put("PRIORITY_MIN", -2);
+        Map<String, Object> notificationImportanceMap = new HashMap<>();
+        notificationImportanceMap.put("NONE", 0);
+        notificationImportanceMap.put("MIN", 1);
+        notificationImportanceMap.put("LOW", 2);
+        notificationImportanceMap.put("DEFAULT", 3);
+        notificationImportanceMap.put("HIGH", 4);
+        notificationImportanceMap.put("MAX", 5);
         Map<String, Object> FilterType = new HashMap<>();
         FilterType.put("ARTICLE", "article");
         FilterType.put("CATEGORY", "category");
         constants.put("NotificationPriority", notificationPriorityMap);
+        constants.put("NotificationImportance", notificationImportanceMap);
         constants.put("FilterType", FilterType);
         constants.put("ACTION_USER_RESTORE_ID_GENERATED", Freshchat.FRESHCHAT_USER_RESTORE_ID_GENERATED);
         constants.put("ACTION_UNREAD_MESSAGE_COUNT_CHANGED", Freshchat.FRESHCHAT_ACTION_MESSAGE_COUNT_CHANGED);
         constants.put("ACTION_USER_INTERACTION", FRESHCHAT_ACTION_USER_INTERACTION);
         constants.put("ACTION_FRESHCHAT_EVENTS", Freshchat.FRESHCHAT_EVENTS);
         constants.put(ACTION_OPEN_LINKS, ACTION_OPEN_LINKS);
+        constants.put(ACTION_LOCALE_CHANGED_BY_WEBVIEW, ACTION_LOCALE_CHANGED_BY_WEBVIEW);
         constants.put("FRESHCHAT_ACTION_NOTIFICATION_CLICK_LISTENER", Freshchat.FRESHCHAT_ACTION_NOTIFICATION_INTERCEPTED);
+        constants.put("ACTION_SET_TOKEN_TO_REFRESH_DEVICE_PROPERTIES", Freshchat.FRESHCHAT_SET_TOKEN_TO_REFRESH_DEVICE_PROPERTIES);
         return constants;
     }
 
@@ -155,6 +169,9 @@ public class RNFreshchatSdk extends ReactContextBaseJavaModule {
             }
             if (initArgs.hasKey("gallerySelectionEnabled")) {
                 freshchatConfig.setGallerySelectionEnabled(initArgs.getBoolean("gallerySelectionEnabled"));
+            }
+            if (initArgs.hasKey("fileSelectionEnabled")) {
+                freshchatConfig.setFileSelectionEnabled(initArgs.getBoolean("fileSelectionEnabled"));
             }
             if (initArgs.hasKey("teamMemberInfoVisible")) {
                 freshchatConfig.setTeamMemberInfoVisible(initArgs.getBoolean("teamMemberInfoVisible"));
@@ -506,6 +523,10 @@ public class RNFreshchatSdk extends ReactContextBaseJavaModule {
                 notificationConfig.setPriority(readableMap.getInt("priority"));
             }
 
+            if (readableMap.hasKey("importance")) {
+                notificationConfig.setImportance(readableMap.getInt("importance"));
+            }
+
             if (readableMap.hasKey("overrideNotificationClickListener")) {
                 notificationConfig.setNotificationInterceptionEnabled(readableMap.getBoolean("overrideNotificationClickListener"));
             }
@@ -582,6 +603,16 @@ public class RNFreshchatSdk extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void registerForLocaleChangedByWebview(boolean register) {
+        Log.i(LOG_TAG, "registerForLocaleChangedByWebview: " + register);
+        if (register) {
+            Freshchat.getInstance(getContext()).setWebviewListener(webviewListener);
+        } else {
+            Freshchat.getInstance(getContext()).setWebviewListener(null);
+        }
+    }
+
+    @ReactMethod
     public void registerForUserActions(boolean register) {
         Log.i(LOG_TAG, "registerForUserActions: " + register);
         if (register) {
@@ -598,6 +629,16 @@ public class RNFreshchatSdk extends ReactContextBaseJavaModule {
             registerBroadcastReceiver(notificationClickReceiver, Freshchat.FRESHCHAT_ACTION_NOTIFICATION_INTERCEPTED);
         } else {
             unregisterBroadcastReceiver(notificationClickReceiver);
+        }
+    }
+
+    @ReactMethod
+    public void registerForJWTRefresh(boolean register) {
+        Log.i(LOG_TAG, "registerForJWTRefresh: " + register);
+        if (register) {
+            registerBroadcastReceiver(jwtRefreshEventReceiver, Freshchat.FRESHCHAT_SET_TOKEN_TO_REFRESH_DEVICE_PROPERTIES);
+        } else {
+            unregisterBroadcastReceiver(jwtRefreshEventReceiver);
         }
     }
 
@@ -631,6 +672,11 @@ public class RNFreshchatSdk extends ReactContextBaseJavaModule {
         Freshchat.trackEvent(getContext(), name, params);
     }
 
+    @ReactMethod
+    public void notifyAppLocaleChange() {
+        Freshchat.notifyAppLocaleChange(getContext());
+    }
+
     private void registerBroadcastReceiver(@NonNull FreshchatSDKBroadcastReceiver receiver, @NonNull String action) {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(action);
@@ -648,6 +694,14 @@ public class RNFreshchatSdk extends ReactContextBaseJavaModule {
             map.putString("url", url);
             emitEvent(getReactApplicationContext(), ACTION_OPEN_LINKS, map);
             return true;
+        }
+    };
+
+    private FreshchatWebViewListener webviewListener = new FreshchatWebViewListener() {
+        @Override
+        public void onLocaleChangedByWebView(@NonNull WeakReference<Context> activityContext) {
+            WritableMap map = new WritableNativeMap();
+            emitEvent(getReactApplicationContext(), ACTION_LOCALE_CHANGED_BY_WEBVIEW, map);
         }
     };
 

@@ -8,46 +8,54 @@ import {
 } from 'react-native';
 const { version } = require('../package.json');
 
-rn_sdk_version_placeholder = "{{rn-version}}";
-platform_name_placeholder = "{{platform}}";
-platform_sdk_version_placeholder = "{{platform-version}}";
-android_platform_name = "android";
-ios_platform_name = "ios";
-sdk_version_placeholder = "rn-" + rn_sdk_version_placeholder + "-" + platform_name_placeholder + "-" + platform_sdk_version_placeholder;
+const rn_sdk_version_placeholder = "{{rn-version}}";
+const platform_name_placeholder = "{{platform}}";
+const platform_sdk_version_placeholder = "{{platform-version}}";
+const android_platform_name = "android";
+const ios_platform_name = "ios";
+const sdk_version_placeholder = "rn-" + rn_sdk_version_placeholder + "-" + platform_name_placeholder + "-" + platform_sdk_version_placeholder;
 
-isAndroid = function() {
+const isAndroid = function() {
     return !isIos();
 };
 
-isIos = function() {
+const isIos = function() {
     return Platform.OS === 'ios';
 };
 
-registerForRestoreIdUpdates = function (register) {
+const registerForRestoreIdUpdates = function (register) {
     RNFreshchatSdk.registerForRestoreIdUpdates(register);
 };
 
-registerForMessageCountUpdates = function (register) {
+const registerForMessageCountUpdates = function (register) {
     RNFreshchatSdk.registerForMessageCountUpdates(register);
 };
 
-registerUserInteractionListerner = function (register) {
+const registerUserInteractionListerner = function (register) {
     RNFreshchatSdk.registerUserInteractionListerner(register);
 };
 
-registerForOpeningLink = function (register) {
+const registerForOpeningLink = function (register) {
     RNFreshchatSdk.registerForOpeningLink(register);
 };
 
-registerForUserActions = function (register) {
+const registerForLocaleChangedByWebview = function (register) {
+    RNFreshchatSdk.registerForOpeningLink(register);
+};
+
+const registerForUserActions = function (register) {
     RNFreshchatSdk.registerForUserActions(register);
 };
 
-registerNotificationClickListener = function (register) {
+const registerNotificationClickListener = function (register) {
     RNFreshchatSdk.registerNotificationClickListener(register);
 };
 
-enableNativeListenerForType = function (type, enable) {
+const registerForJWTRefresh = function (register) {
+    RNFreshchatSdk.registerForJWTRefresh(register);
+};
+
+const enableNativeListenerForType = function (type, enable) {
     switch (type) {
         case RNFreshchatSdk.ACTION_UNREAD_MESSAGE_COUNT_CHANGED:
             registerForMessageCountUpdates(enable);
@@ -61,35 +69,46 @@ enableNativeListenerForType = function (type, enable) {
         case RNFreshchatSdk.ACTION_OPEN_LINKS:
             registerForOpeningLink(enable);
             break;
+        case RNFreshchatSdk.ACTION_LOCALE_CHANGED_BY_WEBVIEW:
+            registerForLocaleChangedByWebview(enable);
+            break;
         case RNFreshchatSdk.ACTION_FRESHCHAT_EVENTS:
             registerForUserActions(enable);
             break;
         case RNFreshchatSdk.FRESHCHAT_ACTION_NOTIFICATION_CLICK_LISTENER:
             registerNotificationClickListener(enable);
             break;
+        case RNFreshchatSdk.ACTION_SET_TOKEN_TO_REFRESH_DEVICE_PROPERTIES:
+            registerForJWTRefresh(enable);
+            break;
     }
 };
 
-eventsList = function(key) {
+const eventsList = function(key) {
     let events = {
-        EVENT_EXTERNAL_LINK_CLICKED        : RNFreshchatSdk.ACTION_OPEN_LINKS,
-        EVENT_UNREAD_MESSAGE_COUNT_CHANGED : RNFreshchatSdk.ACTION_UNREAD_MESSAGE_COUNT_CHANGED,
-        EVENT_USER_RESTORE_ID_GENERATED    : RNFreshchatSdk.ACTION_USER_RESTORE_ID_GENERATED,
-        EVENT_USER_INTERACTED              : RNFreshchatSdk.ACTION_USER_INTERACTION,
-        FRESHCHAT_EVENTS                   : RNFreshchatSdk.ACTION_FRESHCHAT_EVENTS,
-        FRESHCHAT_NOTIFICATION_CLICKED     : RNFreshchatSdk.FRESHCHAT_ACTION_NOTIFICATION_CLICK_LISTENER
+        EVENT_EXTERNAL_LINK_CLICKED                    : RNFreshchatSdk.ACTION_OPEN_LINKS,
+        EVENT_LOCALE_CHANGED_BY_WEBVIEW                : RNFreshchatSdk.ACTION_LOCALE_CHANGED_BY_WEBVIEW,
+        EVENT_UNREAD_MESSAGE_COUNT_CHANGED             : RNFreshchatSdk.ACTION_UNREAD_MESSAGE_COUNT_CHANGED,
+        EVENT_USER_RESTORE_ID_GENERATED                : RNFreshchatSdk.ACTION_USER_RESTORE_ID_GENERATED,
+        EVENT_USER_INTERACTED                          : RNFreshchatSdk.ACTION_USER_INTERACTION,
+        FRESHCHAT_EVENTS                               : RNFreshchatSdk.ACTION_FRESHCHAT_EVENTS,
+        FRESHCHAT_NOTIFICATION_CLICKED                 : RNFreshchatSdk.FRESHCHAT_ACTION_NOTIFICATION_CLICK_LISTENER,
+        EVENT_SET_TOKEN_TO_REFRESH_DEVICE_PROPERTIES   : RNFreshchatSdk.ACTION_SET_TOKEN_TO_REFRESH_DEVICE_PROPERTIES
     };
     return events[key];
 };
 
 module.exports = {
 
-    EVENT_EXTERNAL_LINK_CLICKED        : eventsList('EVENT_EXTERNAL_LINK_CLICKED'),
-    EVENT_UNREAD_MESSAGE_COUNT_CHANGED : eventsList('EVENT_UNREAD_MESSAGE_COUNT_CHANGED'),
-    EVENT_USER_RESTORE_ID_GENERATED    : eventsList('EVENT_USER_RESTORE_ID_GENERATED'),
-    EVENT_USER_INTERACTED              : eventsList('EVENT_USER_INTERACTED'),
-    FRESHCHAT_EVENTS                   : eventsList('FRESHCHAT_EVENTS'),
-    FRESHCHAT_NOTIFICATION_CLICKED     : eventsList('FRESHCHAT_NOTIFICATION_CLICKED'),
+    EVENT_EXTERNAL_LINK_CLICKED                   : eventsList('EVENT_EXTERNAL_LINK_CLICKED'),
+    EVENT_ANDROID_LOCALE_CHANGED_BY_WEBVIEW       : eventsList('EVENT_LOCALE_CHANGED_BY_WEBVIEW'),
+    EVENT_UNREAD_MESSAGE_COUNT_CHANGED            : eventsList('EVENT_UNREAD_MESSAGE_COUNT_CHANGED'),
+    EVENT_USER_RESTORE_ID_GENERATED               : eventsList('EVENT_USER_RESTORE_ID_GENERATED'),
+    EVENT_USER_INTERACTED                         : eventsList('EVENT_USER_INTERACTED'),
+    FRESHCHAT_EVENTS                              : eventsList('FRESHCHAT_EVENTS'),
+    FRESHCHAT_NOTIFICATION_CLICKED                : eventsList('FRESHCHAT_NOTIFICATION_CLICKED'),
+    EVENT_SET_TOKEN_TO_REFRESH_DEVICE_PROPERTIES  : eventsList('EVENT_SET_TOKEN_TO_REFRESH_DEVICE_PROPERTIES'),
+
 
     init: function(freshchatConfig) {
         RNFreshchatSdk.init(freshchatConfig);
@@ -223,10 +242,14 @@ module.exports = {
         RNFreshchatSdk.trackEvent(name, properties);
     },
 
-    addEventListener: function (type, handler) {
-        listener = emitter.addListener(type, handler);
+    notifyAppLocaleChange: function () {
+        RNFreshchatSdk.notifyAppLocaleChange();
+    },
 
-        shouldStartNativeListener = false;
+    addEventListener: function (type, handler) {
+        const listener = emitter.addListener(type, handler);
+
+        let shouldStartNativeListener = false;
         if (!_eventHandlers[type]) {
             _eventHandlers[type] = new Map();
             shouldStartNativeListener = true;
@@ -269,15 +292,16 @@ module.exports = {
     },
 
     transformPushNotificationIOSPayloadToNativePayload: function (reactPayload) {
-        const nativePayload = reactPayload._data;
+        var nativePayload = reactPayload._data;
 
-        nativePayload.aps = {};
-        nativePayload.aps.alert = reactPayload._alert;
-        nativePayload.aps.badge = reactPayload._badgeCount;
-        // nativePayload.aps.mutable-content = 1;
-        nativePayload.aps.sound = "default";
-
-        return nativePayload;
+        var load = {
+          "alert": reactPayload._alert,
+          "badge": reactPayload._badgeCount,
+          "sound" : "default"
+        };
+        var apsPayload = {"aps":load};
+        var payload = Object.assign({}, apsPayload, nativePayload);
+        return payload;
     },
 
     // isAppActiveWhenReceivingNotification: function (nativePayload) {
