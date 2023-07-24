@@ -1,5 +1,104 @@
 # Freshchat React Native SDK
 
+## 4.3.0 (2023-06-29)
+
+### Feature Enhancement
+* Support for multi-select Carousel as a new input type for your customers. Customers will now be able to pick and choose multiple choices that appears as a series of options with a horizontal scroll (carousel) on the screen. The options list can also contain images in iOS.
+* Support for Phone number and OTP as a new input type for your customers. Customers will now be able to enter their phone numbers with country code to generate an OTP which is then entered by user and is accepted by the SDK to process user information.
+* You will now be able to pass custom user properties related to a user conversation from the mobile app to the bots via the SDK in Android.
+* We are adding support for multi-select as a new input type for your customers. Customers will now be able to pick and choose multiple choices that appears as list and dropdown in iOS.
+* We are adding support for Date and time as a new input type for your customers. Customers will now be able to pick a date and pick a time within the bot flow in iOS.
+* Update UI for single select button and dropdown options in iOS.
+* This version will now let you receive feedback from your customers in the form of a text. Customers will be able to type their feedback if configured in the bot flow in Android.
+* This version will now let you receive feedback from your customers in the form of a preset choices. Customers will be able to choose their feedback from a maximum 3 choices in Android.
+
+### Bug Fixes :
+* Fix for notifications not coming when an old user is restored over existing user in iOS.
+
+## 4.2.4 (2023-06-02)
+
+### Bug Fixes :
+* Fix for app version not updating in device properties section in iOS.
+* Fix profile image flickering for bot or agent message in chat in iOS.
+* Fix for localization with country value in iOS.
+* Fix display of CSAT title with theme color in iOS.
+* Fix spaces in multiline bot messages with paragraph tag.
+
+## 4.2.3 (2023-05-05)
+
+### Feature Enhancement
+* Support for user attribute placeholders in bot message.
+* Introducing the ability to pass custom properties and bot properties related to a conversation from the mobile app to the bots via SDK in iOS.
+* Display links configured for bot articles in iOS.
+* Improve conversation fetch when user comes to chat without notification click in iOS.
+* Update invalid initilization experience with alert message in iOS.
+* Display links configured for bot articles in Android.
+
+### Bug Fixes :
+* Fix to show bot flow message instead of unsupported format error message in iOS.
+* Fix to show HTML entities instead of entity names in iOS.
+* Fix to allow attachments in the first message while talking to an agent in iOS.
+* Fix CFBundleSupportedPlatforms issue while submitting app to store in iOS.
+* Fix for multiple selection of quick reply buttons in Android.
+* Fix for displaying blank topic name in topic list screen in Android.
+* Fix for HTML tags not supported in carousel title and subtitle in Android.
+* Fix for multiple selection of Dropdown options in Android.
+* Fix for bot not being triggered when user responds to CSAT in Android.
+* Fix for locale change not being reflected in topics screen in Android.
+
+## 4.2.2 (2023-03-08)
+
+### Bug Fixes :
+* Fix for updating user details along with user creation in iOS.
+* Fix to stop auto scrolling of Carousel cards to initial card in iOS.
+* Fix for overlapping new message indicator with reply editor in iOS.
+* Fix to allow sending attachment only when bot requests an attachment in iOS.
+* Fix for localisation of FAQ search bar cancel text in iOS.
+* Fix to stop FAQ content from shaking while scrolling with less content in iOS.
+* Fix for send button being enabled when only empty spaces are entered in Android.
+* Fix for extra space being displayed below multiline bot messages in Android.
+* Fix for a crash which occurs while attaching images in Android.
+
+## 4.2.1 (2023-01-31)
+
+### Enhancement :
+* Support for Read Only and Single Select carousel for bot flow in Android.
+* Support for star rate feedback from users during bot interactions in iOS.
+
+### Bug Fixes :
+* Fix to initiate bot for resolved conversations when chat screen opens in Android
+
+## 4.2.0 (2022-12-04)
+
+### Enhancement :
+* Changes to support Push notifications with P8 certification.
+
+### Bug Fixes :
+* Support for image in bot flow messages in iOS.
+* Fix for agent/bot message timestamp aligning to the right end of the message bubble in Android.
+* Fix CFBundleSupportedPlatforms issue while submitting app to store in iOS.
+
+## 4.1.3 (2022-11-24)
+
+### Improvement :
+* Updated targetSdkVersion to Android 12.
+
+### Bug Fixes :
+* Fix for the next bot flow to trigger on selecting carousel in Android.
+* Fix for clearing error message for invalid input in bot flow in Android.
+* Fix for handling empty messages for Android.
+* Fix for handling quick actions menu overlapping in landscape mode for Android.
+* Fix for custom attachment icons appearing too large in Android.
+
+## 4.1.2 (2022-11-09)
+
+### Improvement :
+* Minor UI changes and improvements to accomodate for ios devices and versions in iOS.
+
+### Bug Fixes :
+* Fix for Quick Action Pre-defined buttons in iOS.
+* Fix impacting CSAT users for RTL users for iOS.
+
 ## 4.1.1 (2022-10-26)
 
 ### Feature Enhancement
